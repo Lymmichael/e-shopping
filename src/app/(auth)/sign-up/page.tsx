@@ -7,9 +7,11 @@ import { cn } from "@/lib/utils"
 import { ArrowRight } from "lucide-react"
 import {useForm} from "react-hook-form"
 import {zodResolver} from "@hookform/resolvers/zod"
-import {z} from "zod"
+import {ZodError, z} from "zod"
 import {TAuthCredentialsValidator,AuthCredentialsValidator} from '@/lib/validators/account-credentials-validators'
 import { trpc } from "@/trpc/client"
+import {toast} from 'sonner'
+import { useRouter } from "next/navigation"
 
 const Page=()=>{
 
@@ -21,12 +23,35 @@ const Page=()=>{
         resolver:zodResolver(AuthCredentialsValidator),
     })
          
-    const {data}=trpc.anyApiRoute.useQuery()
+    // const {data}=trpc.anyApiRoute.useQuery()
 
-    console.log(data)
+    // console.log(data)
+
+    const router=useRouter()
+
+    const {mutate, isLoading}=trpc.auth.createPayloadUser.useMutation({
+        onError:(err)=>{
+            if(err.data?.code==="CONFLICT"){
+                toast.error("This email is already in use. Sign in instead")
+                //called in layout <Toaster />
+                return 
+            }
+
+            if(err instanceof ZodError){
+                toast.error(err.issues[0].message)
+                return
+            }
+
+            toast.error('Something goes wrong.')
+        },
+        onSuccess:({sentToEmail})=>{
+            toast.success(`Verification email sent to ${sentToEmail}`)
+            router.push('/verify-email?to='+sentToEmail)
+        }
+    })
 
     function onSubmit({email, password}:TAuthCredentialsValidator){
-        //send data to the server
+        mutate({email,password})
     }
 
     return<>
@@ -60,17 +85,24 @@ const Page=()=>{
                                 })}
                                 placeholder='you@example.com'
                             />
+                            {errors?.email && <p className='text-sm text-red-500'>
+                                {errors.email.message}
+                                </p>}
                         </div>
 
                         <div className='grid gap-1 py-2'>
                             <Label htmlFor='password'>Password</Label>
                             <Input 
+                                type="password"
                                 {...register("password")}
                                 className={cn({
                                     "focus-visible:ring-red-500":errors.password
                                 })}
                                 placeholder='password'
                             />
+                            {errors?.password && <p className='text-sm text-red-500'>
+                                {errors.password.message}
+                                </p>}
                         </div>
                     
                         <Button >Sign up</Button>
