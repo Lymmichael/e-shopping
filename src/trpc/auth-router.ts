@@ -52,5 +52,31 @@ export const authRouter = router({
 
         return {success:true}
     }),
+    signIn: publicProcedure
+        .input(AuthCredentialsValidator)
+        .mutation(
+            // mutation can get access to the data input
+            async ({input,ctx})=>{
+                //ctx is the respone for the token of the server(server.ts)
+            const {email, password}=input
+            const {res}=ctx
+            const payload= await getPayloadClient()
+            //payload is the cms and access payload here
+                try{
+                    //login function
+                    await payload.login({
+                        collection:"users",
+                        data:{
+                            email,
+                            password
+                        },
+                        //passing in data from fontend
+                        res
+                    })
 
+                    return{success:true}
+                }catch(err){
+                    throw new TRPCError({code:'UNAUTHORIZED'})
+                }
+        })
 })

@@ -5,9 +5,15 @@ import NavItem from "../NavItems";
 import NavItems from "../NavItems";
 import { buttonVariants } from "./button";
 import Cart from "../Cart";
-export default function Navbar(){
+import { getServerSiderUser } from "@/lib/payload.utils";
+import { cookies } from "next/headers";
+import UserAccountNav from "../UserAccountNav";
 
-    const user=null
+const Navbar = async ()=>{
+    
+    const nextCookies =cookies()
+    const { user } = await getServerSiderUser(nextCookies)
+
 
     return(
         <div className='bg-white sticky z-50 top-0 inset-x-0 h-16'>
@@ -38,13 +44,15 @@ export default function Navbar(){
                                         Sign in
                                         </a>
                                     }
-                                    {user?null:(
+                                    {user?null:(   
                                         <span
                                             className='h-6 w-px bg-gray-200'    
                                             aria-hidden='true'
                                         />
                                     )}
-                                    {user? <p></p>:
+                                    {user? (
+                                        <UserAccountNav user={user}/>
+                                    ):
                                         <a href='/sign-up' 
                                             className={buttonVariants({
                                                 variant:'ghost'
@@ -78,3 +86,5 @@ export default function Navbar(){
         </div>
     )
 }
+
+export default Navbar
