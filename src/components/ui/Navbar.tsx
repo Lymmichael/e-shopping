@@ -24,9 +24,9 @@ const Navbar = async ()=>{
                             {/* TODO: mobile nav */}
 
                             <div className='ml-4 flex lg:ml-0'>
-                                <Link href='/'>
+                                <a href='/'>
                                     <Icons.logo className='h-10 w-10'></Icons.logo>
-                                </Link>
+                                </a>
                             </div>
                             <div className='hidden lg:ml-8 lg:block lg:self-stretch z-60'>
                                 <NavItems />
