@@ -6,6 +6,8 @@ import { Skeleton } from "./ui/skeleton"
 import Link from "next/link"
 import { cn, formatPrice } from "../lib/utils"
 import { PRODUCT_CATEGORIES } from "@/config"
+import ImageSlider from "./ImageSlider"
+
 
 interface ProductListingProps{
     product:Product|null
@@ -26,11 +28,12 @@ const ProductListing=({
         //avoid memory leak    
     },[index])
 
-    console.log(isVisible)
-    console.log(product)
-    console.log("tetsing")
-
     if(!product||!isVisible) return<ProductPlaceHolder/>
+
+    const validUrls=product.images
+    .map(({image})=>
+        typeof image==='string'?image:image.url
+    ).filter(Boolean) as string[]
 
     const label= PRODUCT_CATEGORIES.find(
         ({value})=>value===product.category
@@ -46,7 +49,7 @@ const ProductListing=({
                         'visible animate-in fade-in-5':isVisible,
                     })}>
                 <div className='flex flex-col w-full'>
-                    
+                    <ImageSlider urls={validUrls}/>
                     <h3 className='mt-4 font-medium text-sm text-gray-700'>
                         {product.name}
                     </h3>
