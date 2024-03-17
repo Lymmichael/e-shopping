@@ -28,7 +28,7 @@ const Navbar = async ()=>{
                                     <Icons.logo className='h-10 w-10'></Icons.logo>
                                 </a>
                             </div>
-                            <div className='hidden lg:ml-8 lg:block lg:self-stretch z-60'>
+                            <div className='hidden lg:ml-8 w-3/4 lg:block lg:self-stretch z-60'>
                                 <NavItems />
                             </div>
 

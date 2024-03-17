@@ -48,7 +48,18 @@ export interface Product {
   name: string;
   description?: string | null;
   price: number;
-  category: 'ui_kits' | 'Icons';
+  category:
+    | 'ui_kits'
+    | 'chips_and_crisps'
+    | 'Cookies_and_Biscuits'
+    | 'candy_and_chocolate'
+    | 'nuts_and_seeds'
+    | 'popcorn'
+    | 'cracks'
+    | 'pretzels'
+    | 'dried_fruits'
+    | 'granola_bars_and_energy_bars'
+    | 'jerky';
   product_files: string | ProductFile;
   approvedForSale?: ('pending' | 'approved' | 'denied') | null;
   priceId?: string | null;

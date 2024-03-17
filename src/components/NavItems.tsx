@@ -22,7 +22,7 @@ export default function NavItems(){
 
     const navRef=useRef< HTMLDivElement | null>(null)
     useOnClickOutside(navRef,()=>setActiveIndex(null))
-    return <div className='flex h-full gap-5' ref={navRef}>
+    return <div className='flex h-full overflow-x-auto gap-5' ref={navRef}>
         {PRODUCT_CATEGORIES.map((category,i)=>{
             function handleOpen(){
                 if(activeIndex===i){
