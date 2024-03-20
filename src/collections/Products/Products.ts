@@ -1,5 +1,15 @@
+import { BeforeChangeHook } from 'payload/dist/collections/config/types';
 import { PRODUCT_CATEGORIES } from "../../config";
 import { CollectionConfig } from "payload/types";
+import { Product } from "../..//payload-types";
+
+const addUser: BeforeChangeHook<Product> = async ({
+    req,
+    data,
+  }) => {
+    const user = req.user
+    return { ...data, user: user.id }
+  }
 
 export const Products: CollectionConfig={
     slug:"products",
@@ -9,6 +19,11 @@ export const Products: CollectionConfig={
     },
     access:{},
     //who can access
+    hooks:{
+        beforeChange:[
+            addUser
+        ]
+    },
     fields:[
         {
             name:"user",
