@@ -6,12 +6,11 @@ import { stripe } from '../lib/stripe'
 import type Stripe from 'stripe'
 
 export const paymentRouter = router({
-    createSession: PrivateProcedure
-    .input(z.object({productIds: z.array(z.string())}))
+    createSession: PrivateProcedure.input(z.object({productIds: z.array(z.string())}))
     .mutation(async({ctx,input})=>{
         const {user}=ctx
         let {productIds}=input
-
+        console.log("trytry kui")
         if(productIds.length===0){
             throw new TRPCError({code:"BAD_REQUEST"})
             //if no id, then no user, then calling API unsccuessful
@@ -57,21 +56,22 @@ export const paymentRouter = router({
             }
         })
 
-        try{
-            const stripeSession= await stripe.checkout.sessions.create({
+        try {
+            const stripeSession =
+              await stripe.checkout.sessions.create({
                 success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/thank-you?orderId=${order.id}`,
-                cancel_url:`${process.env.NEXT_PUBLIC_SERVER_URL}/cart}`,
-                payment_method_types:["card","paypal"],
-                mode:"payment",
-                metadata:{
-                    userId:user.id,
-                    orderId:order.id
+                cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/cart`,
+                payment_method_types: ['card','alipay'],
+                mode: 'payment',
+                metadata: {
+                  userId: user.id,
+                  orderId: order.id,
                 },
                 line_items,
-            }) 
-            console.log("testing")
-            return {url: stripeSession.url}
-        }catch(err){
+              })
+    
+            return { url: stripeSession.url }
+          }catch(err){
             console.log("err "+err)
             return {url:null}
         }

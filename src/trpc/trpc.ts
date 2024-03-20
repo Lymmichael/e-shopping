@@ -10,7 +10,7 @@ const isAuth=middleware(async ({ctx,next})=>{
     const req=ctx.req as PayloadRequest
     //send request and chec kwhether the user login in or not
     const {user}=req as {user:User | null}
-
+    console.log("testinging")
     if(!user|| !user.id){
         throw new TRPCError({code:"UNAUTHORIZED"})
     }

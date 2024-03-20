@@ -15,14 +15,21 @@ const Page=()=>{
     const {items,removeItem}=UseCart()
 
     const [isMounted,setIsMounted]=useState(false)
+    
     const router=useRouter()
-    const {mutate: createCheckoutSession, isLoading}=trpc.payment.createSession.useMutation({
-        onSuccess:({url})=>{
-            if(url){
-                router.push(url)
-            }
-        }
-    })
+
+    const {mutate: createCheckoutSession, isLoading}=
+        trpc.payment.createSession.useMutation({
+            onSuccess:({url})=>{
+                if(url){
+                    router.push(url)
+                    console.log("testig")
+                }
+                else{
+                    console.log("url equals to null")
+                }
+            },
+        })
 
     const cartTotal=items.reduce(
         (total,{product})=>total+product.price
