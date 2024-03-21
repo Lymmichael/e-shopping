@@ -1,5 +1,16 @@
+import { BeforeChangeHook } from 'payload/dist/collections/config/types';
 import { PRODUCT_CATEGORIES } from "../../config";
 import { CollectionConfig } from "payload/types";
+import { Product } from "../..//payload-types";
+import { stripe } from '../../lib/stripe';
+
+const addUser: BeforeChangeHook<Product> = async ({
+    req,
+    data,
+  }) => {
+    const user = req.user
+    return { ...data, user: user.id }
+  }
 
 export const Products: CollectionConfig={
     slug:"products",
@@ -9,6 +20,47 @@ export const Products: CollectionConfig={
     },
     access:{},
     //who can access
+    hooks:{
+        beforeChange:[
+            addUser, 
+            async (args)=>{
+                if(args.operation==='create'){
+                    const data =args.data as Product
+
+                    const createdProduct = await stripe.products.create({
+                        name: data.name,
+                        default_price_data:{
+                            currency:"HKD",
+                            unit_amount:Math.round(data.price*100),
+                        }
+                    })
+
+                    const updated:Product={
+                        ...data,
+                        stripeId: createdProduct.id,
+                        priceId: createdProduct.default_price as string 
+                    }
+                    return updated
+                    //put differents fields in DB
+                }else if(args.operation==='update'){
+                    //product existsconst data =args.data as Product
+                    const data =args.data as Product
+
+                    const updatedProduct = await stripe.products.update(data.stripeId!,{
+                        name:data.name,
+                        default_price:data.priceId!,
+                    })
+
+                    const updated:Product={
+                        ...data,
+                        stripeId: updatedProduct.id,
+                        priceId: updatedProduct.default_price as string 
+                    }
+                    
+                }
+            }
+        ]
+    },
     fields:[
         {
             name:"user",
@@ -129,6 +181,46 @@ export const Products: CollectionConfig={
                     required:true,
                 }
             ]
-        }
+        },{
+            name: "likes",
+            type: "relationship",
+            relationTo: "users",
+            label: "likes",
+            required: false,
+            access: {
+              create: ({ req }) => req.user.role === "admin",
+              read: ({ req }) => req.user.role === "admin",
+              update: ({ req }) => req.user.role === "admin"
+              // Only admin can read, update, and create
+            },
+            hasMany:true
+          },{
+            name: "dislikes",
+            type: "relationship",
+            relationTo: "users",
+            label: "dislikes",
+            required: false,
+            access: {
+              create: ({ req }) => req.user.role === "admin",
+              read: ({ req }) => req.user.role === "admin",
+              update: ({ req }) => req.user.role === "admin"
+              // Only admin can read, update, and create
+            },
+            hasMany:true,
+          },
+        {
+            name:"comments",
+            label:"comments",
+            type:"text",
+            required:false,
+            access:{
+                create: ({req})=> req.user.role==="admin",
+                read: ({req})=> req.user.role==="admin",
+                update: ({req})=> req.user.role==="admin"
+                //only admin can read, update and create
+            },
+            hasMany:true,
+            
+        },
     ],
 }

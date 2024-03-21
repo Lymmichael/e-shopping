@@ -25,6 +25,25 @@ export const Users: CollectionConfig={
                 {label:'Admin', value:'admin'},
                 {label:'User',value:'user'},
             ]
-        }
+        },{
+            name:"comments",
+            type:"text",
+            label:"comments",
+            required:false,
+        },
+        // {
+        //     name: "likes",
+        //     type: "relationship",
+        //     relationTo: "products",
+        //     label: "likes",
+        //     required: false,
+        //     access: {
+        //       create: ({ req }) => req.user.role === "admin",
+        //       read: ({ req }) => req.user.role === "admin",
+        //       update: ({ req }) => req.user.role === "admin"
+        //       // Only admin can read, update, and create
+        //     },
+        //     hasMany:true
+        //   },
     ]
 }
