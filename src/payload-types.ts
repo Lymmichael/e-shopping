@@ -25,6 +25,7 @@ export interface Config {
 export interface User {
   id: string;
   role: 'admin' | 'user';
+  comments?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -57,6 +58,9 @@ export interface Product {
     image: string | Media;
     id?: string | null;
   }[];
+  likes?: (string | User)[] | null;
+  dislikes?: (string | User)[] | null;
+  comments?: string[] | null;
   updatedAt: string;
   createdAt: string;
 }

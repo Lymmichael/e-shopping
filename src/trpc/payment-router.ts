@@ -37,6 +37,7 @@ export const paymentRouter = router({
                 user:user.id,
             }
         })
+        
         const line_items:Stripe.Checkout.SessionCreateParams.LineItem[]=[]
 
         filteredProducts.forEach((product)=>{

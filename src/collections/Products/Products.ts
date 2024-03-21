@@ -181,6 +181,46 @@ export const Products: CollectionConfig={
                     required:true,
                 }
             ]
-        }
+        },{
+            name: "likes",
+            type: "relationship",
+            relationTo: "users",
+            label: "likes",
+            required: false,
+            access: {
+              create: ({ req }) => req.user.role === "admin",
+              read: ({ req }) => req.user.role === "admin",
+              update: ({ req }) => req.user.role === "admin"
+              // Only admin can read, update, and create
+            },
+            hasMany:true
+          },{
+            name: "dislikes",
+            type: "relationship",
+            relationTo: "users",
+            label: "dislikes",
+            required: false,
+            access: {
+              create: ({ req }) => req.user.role === "admin",
+              read: ({ req }) => req.user.role === "admin",
+              update: ({ req }) => req.user.role === "admin"
+              // Only admin can read, update, and create
+            },
+            hasMany:true,
+          },
+        {
+            name:"comments",
+            label:"comments",
+            type:"text",
+            required:false,
+            access:{
+                create: ({req})=> req.user.role==="admin",
+                read: ({req})=> req.user.role==="admin",
+                update: ({req})=> req.user.role==="admin"
+                //only admin can read, update and create
+            },
+            hasMany:true,
+            
+        },
     ],
 }
