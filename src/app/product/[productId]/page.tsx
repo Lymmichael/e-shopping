@@ -4,16 +4,18 @@ import ImageSlider from '@/components/ImageSlider'
 import MaxWidthWrapper from '@/components/MaxWidthWrapper'
 import ProductComment from '@/components/ProductComment'
 import ProductReel from '@/components/ProductReel'
-import { PRODUCT_CATEGORIES } from '@/config'
-import { getPayloadClient } from '@/get-payload'
-import { getServerSiderUser } from '@/lib/payload.utils'
-import { formatPrice } from '@/lib/utils'
-import { trpc } from '@/trpc/client'
+import { PRODUCT_CATEGORIES } from '../../../config'
+import { getPayloadClient } from '../../../get-payload'
+import { getServerSiderUser } from '../../../lib/payload.utils'
+import { formatPrice } from '../../../lib/utils'
+import { trpc } from '../../..//trpc/client'
 import { Book, Check, MessageSquare, Send, Shield, ThumbsDown, ThumbsUp } from 'lucide-react'
 import { cookies } from 'next/headers'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { useState } from 'react'
+import CommentHandler from '../../../components/CommentHandler'
+import LikeHandler from '../../../components/LikeHandler'
 
 interface PageProps {
   params: {
@@ -32,8 +34,6 @@ const Page = async ({ params }: PageProps) => {
 
   const payload = await getPayloadClient()
 
-  const nextCookies =cookies()
-  const { user } = await getServerSiderUser(nextCookies)
 
   const { docs: products } = await payload.find({
     collection: 'products',
@@ -72,19 +72,7 @@ const Page = async ({ params }: PageProps) => {
   const likeCount=product.likes?.length || 0
   const dislikeCount= product.dislikes?.length || 0
 
-  const SubmitCommentHandler=()=>{
-    if(user==null){
-      return (
-      <div>
-        {user?null:
-          <p className='flex mt-2 text-center text-red-600'>You are required to sign in before making a comment.
-          </p>
-       }
-      </div>
-      )
-      
-    }
-  }
+ 
   return (
     <MaxWidthWrapper className='bg-white'>
       <div className='bg-white'>
@@ -178,18 +166,13 @@ const Page = async ({ params }: PageProps) => {
                 </div>
 
                 <div className='group inline-flex'>
-                  <button>
-                    <ThumbsUp 
-                      aria-hidden='true'        
-                      className='mr-2 h-5 w-5 flex-shrink-0 text-gray-400'
-                      />   
-                  </button>
+                  <LikeHandler product={product}/>
                   <p className='mr-2 text-gray-600 space-x-4'> {likeCount}</p>
                   <ThumbsDown 
                     aria-hidden='true'
                     className='mr-2 h-5 w-5 flex-shrink-0 text-gray-400' />
                    <p className='text-gray-600'>{dislikeCount}</p>
-                 </div>
+                </div>
             </div>
           </div>
         </div>
@@ -213,22 +196,7 @@ const Page = async ({ params }: PageProps) => {
       </div>
 
       {/* leaving comment */}
-      <form 
-        className="mt-4"
-        // onSubmit={()=>1}  
-      >
-        <div className="mb-4">
-            <label className="block text-blue-800 font-medium">leave a comment below</label>
-            <textarea className="border-2 border-blue-600 p-2 w-full rounded"></textarea>
-        </div>
-
-        <button 
-          className="bg-blue-700 text-white font-medium py-2 px-4 rounded hover:bg-blue-600"
-          // onClick={}
-        >
-          Post Comment
-        </button>
-      </form> 
+      <CommentHandler />
     </section>
 
 
