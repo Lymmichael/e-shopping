@@ -9,7 +9,7 @@ import { getPayloadClient } from '../../../get-payload'
 import { getServerSiderUser } from '../../../lib/payload.utils'
 import { formatPrice } from '../../../lib/utils'
 import { trpc } from '../../..//trpc/client'
-import { Book, Check, MessageSquare, Send, Shield, ThumbsDown, ThumbsUp } from 'lucide-react'
+import { Book, Check, MessageCircle, MessageSquare, Send, Shield, ThumbsDown, ThumbsUp } from 'lucide-react'
 import { cookies } from 'next/headers'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -64,13 +64,14 @@ const Page = async ({ params }: PageProps) => {
     .filter(Boolean) as string[]
   // const [comment, setComment]=useState<any>()
 
-  const ThumbsUps=()=>{
-    // trpc.Provider.mutation
-    console.log(1)
-  }
-  console.log(product.comments)
-  const likeCount=product.likes?.length || 0
-  const dislikeCount= product.dislikes?.length || 0
+
+  // const ThumbsUps=()=>{
+  //   // trpc.Provider.mutation
+  //   console.log(1)
+  // }
+  // console.log(product.comments)
+  // const likeCount=product.likes?.length || 0
+  // const dislikeCount= product.dislikes?.length || 0
 
  
   return (
@@ -165,13 +166,16 @@ const Page = async ({ params }: PageProps) => {
                     </div>
                 </div>
 
-                <div className='group inline-flex'>
+                <div className='group inline-flex mt-1'>
                   <LikeHandler product={product}/>
-                  <p className='mr-2 text-gray-600 space-x-4'> {likeCount}</p>
-                  <ThumbsDown 
-                    aria-hidden='true'
-                    className='mr-2 h-5 w-5 flex-shrink-0 text-gray-400' />
-                   <p className='text-gray-600'>{dislikeCount}</p>
+                  {/* <p className='mr-2 text-gray-600 space-x-4'> {likeCount}</p> */}
+                  
+                    <button 
+                      className='group inline-flex text-muted-foreground'
+                    >
+                      <MessageCircle className='ml-8 mr-1 flex-shrink-0 text-gray-400' />
+                      <p className='text-muted-foreground hover: text-gray-700'>Dm them</p>
+                   </button>
                 </div>
             </div>
           </div>

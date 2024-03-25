@@ -10,7 +10,6 @@ export const paymentRouter = router({
     .mutation(async({ctx,input})=>{
         const {user}=ctx
         let {productIds}=input
-        console.log("trytry kui")
         if(productIds.length===0){
             throw new TRPCError({code:"BAD_REQUEST"})
             //if no id, then no user, then calling API unsccuessful
